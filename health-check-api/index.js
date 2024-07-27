@@ -48,61 +48,61 @@ app.post('/users', (req, res) => {
     });
   });
   
-  // Read
-  app.get('/users', (req, res) => {
-    const query = 'SELECT * FROM users';
-    connection.query(query, (err, results) => {
-      if (err) {
-        return res.status(500).send(err);
-      }
-      res.status(200).send(results);
-    });
+// Read
+app.get('/users', (req, res) => {
+  const query = 'SELECT * FROM users';
+  connection.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.status(200).send(results);
   });
+});
   
-  app.get('/users/:id', (req, res) => {
-    const { id } = req.params;
-    const query = 'SELECT * FROM users WHERE id = ?';
-    connection.query(query, [id], (err, results) => {
-      if (err) {
-        return res.status(500).send(err);
-      }
-      if (results.length === 0) {
-        return res.status(404).send({ message: 'User not found' });
-      }
-      res.status(200).send(results[0]);
-    });
+app.get('/users/:id', (req, res) => {
+  const { id } = req.params;
+  const query = 'SELECT * FROM users WHERE id = ?';
+  connection.query(query, [id], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    if (results.length === 0) {
+      return res.status(404).send({ message: 'User not found' });
+    }
+    res.status(200).send(results[0]);
   });
+});
   
-  // Update
-  app.put('/users/:id', (req, res) => {
-    const { id } = req.params;
-    const { name, email, age } = req.body;
-    const query = 'UPDATE users SET name = ?, email = ?, age = ? WHERE id = ?';
-    connection.query(query, [name, email, age, id], (err, results) => {
-      if (err) {
-        return res.status(500).send(err);
-      }
-      if (results.affectedRows === 0) {
-        return res.status(404).send({ message: 'User not found' });
-      }
-      res.status(200).send({ id, name, email, age });
-    });
+// Update
+app.put('/users/:id', (req, res) => {
+  const { id } = req.params;
+  const { name, email, age } = req.body;
+  const query = 'UPDATE users SET name = ?, email = ?, age = ? WHERE id = ?';
+  connection.query(query, [name, email, age, id], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    if (results.affectedRows === 0) {
+      return res.status(404).send({ message: 'User not found' });
+    }
+    res.status(200).send({ id, name, email, age });
   });
+});
   
-  // Delete
-  app.delete('/users/:id', (req, res) => {
-    const { id } = req.params;
-    const query = 'DELETE FROM users WHERE id = ?';
-    connection.query(query, [id], (err, results) => {
-      if (err) {
-        return res.status(500).send(err);
-      }
-      if (results.affectedRows === 0) {
-        return res.status(404).send({ message: 'User not found' });
-      }
-      res.status(204).send();
-    });
+// Delete
+app.delete('/users/:id', (req, res) => {
+  const { id } = req.params;
+  const query = 'DELETE FROM users WHERE id = ?';
+  connection.query(query, [id], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    if (results.affectedRows === 0) {
+      return res.status(404).send({ message: 'User not found' });
+    }
+    res.status(204).send();
   });
+});
 
 // 서버 시작
 app.listen(port, () => {
