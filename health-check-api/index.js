@@ -13,7 +13,7 @@ const connection = mysql.createConnection({
 
   connection.connect(err => {
     if (err) {
-      console.error('Error connecting to MySQL: ', err);
+      console.error('Error connecting to MySQL: ', err);  
       return;
     }
     console.log('Connected to MySQL');
@@ -39,49 +39,49 @@ app.get('/health-check', (req, res) => {
 // Create
 // 고객 정보 등록
 app.post('/users/customer', (req, res) => {
-    const { id, pw, nickname } = req.body;
-    const query = 'INSERT INTO users (id, pw, nickname) VALUES (?, ?, ?)';
-    connection.query(query, [id, pw, nickname], (err, results) => {
-      if (err) {
-        return res.status(500).send(err);
-      }
-      res.status(201).send({ id: results.insertId, pw, nickname });
-    });
+  const { member_id, member_pw, nickname } = req.body;
+  const query = 'INSERT INTO customer (member_id, member_pw, nickname) VALUES (?, ?, ?)';
+  connection.query(query, [member_id, member_pw, nickname], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.status(201).send({ id: results.insertId, member_id, member_pw, nickname });
   });
+});
 
 // 수거 정보 등록
 app.post('/users/pickup', (req, res) => {
-    const { addr, de_addr, status, acc_at, pickup_at } = req.body;
-    const query = 'INSERT INTO users (addr, de_addr, status, acc_at, pickup_at) VALUES (?, ?, ?)';
-    connection.query(query, [addr, de_addr, status, acc_at, pickup_at], (err, results) => {
-      if (err) {
-        return res.status(500).send(err);
-      }
-      res.status(201).send({ addr, de_addr, status, acc_at, pickup_at });
-    });
+  const { status, accepted_at, pickuped_at, address, detailed_address } = req.body;
+  const query = 'INSERT INTO pickup (status, acceppted_at, pickuped_at, address, detailed_address) VALUES (?, ?, ?, ?, ?)';
+  connection.query(query, [status, accepted_at, pickuped_at, address, detailed_address], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.status(201).send({ id: results.insertId, status, accepted_at, pickuped_at, address, detailed_address });
   });
+});
 
 // 구매 정보 등록
 app.post('/users/purchase', (req, res) => {
-    const { addr, de_addr, deli_status, pur_at } = req.body;
-    const query = 'INSERT INTO users (product, addr, de_addr, deli_status, pur_at) VALUES (?, ?, ?)';
-    connection.query(query, [addr, de_addr, deli_status, pur_at], (err, results) => {
-      if (err) {
-        return res.status(500).send(err);
-      }
-      res.status(201).send({ addr, de_addr, deli_status, pur_at });
-    });
+  const { product, delivery_status, purchased_at, address, detailed_address } = req.body;
+  const query = 'INSERT INTO purchase (product, delivery_status, purchased_at, address, detailed_address) VALUES (?, ?, ?, ?, ?)';
+  connection.query(query, [product, delivery_status, purchased_at, address, detailed_address], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.status(201).send({ id: results.insertId, product, delivery_status, purchased_at, address, detailed_address });
   });
+});
 
-// 제품 등록
+// 제품 정보 등록
 app.post('/users/product', (req, res) => {
   const { product, price, product_status } = req.body;
-  const query = 'INSERT INTO users (product, addr, de_addr, deli_status, pur_at) VALUES (?, ?, ?)';
+  const query = 'INSERT INTO product (product, price, product_status) VALUES (?, ?, ?)';
   connection.query(query, [product, price, product_status], (err, results) => {
     if (err) {
       return res.status(500).send(err);
     }
-    res.status(201).send({ product, price, product_status });
+    res.status(201).send({ id: results.insertId, product, price, product_status });
   });
 });
 
@@ -91,8 +91,8 @@ app.post('/users/product', (req, res) => {
 app.put('/users/customer/:id', (req, res) => {
   const { id } = req.params;
   const { point } = req.body;
-  const query = 'UPDATE users SET point = ?';
-  connection.query(query, [point], (err, results) => {
+  const query = 'UPDATE customer SET point = ? WHERE id = ?';
+  connection.query(query, [point, id], (err, results) => {
     if (err) {
       return res.status(500).send(err);
     }
@@ -106,32 +106,32 @@ app.put('/users/customer/:id', (req, res) => {
 //수거 정보 업데이트
 app.put('/users/pickup/:id', (req, res) => {
   const { id } = req.params;
-  const { addr, de_addr, status } = req.body;
-  const query = 'UPDATE users SET addr = ?, de_addr = ?, status = ?';
-  connection.query(query, [addr, de_addr, status], (err, results) => {
+  const { status, address, detailed_address } = req.body;
+  const query = 'UPDATE pickup SET status = ?, address = ?, detailed_address = ? WHERE id = ?';
+  connection.query(query, [status, address, detailed_address, id], (err, results) => {
     if (err) {
       return res.status(500).send(err);
     }
     if (results.affectedRows === 0) {
-      return res.status(404).send({ message: 'User not found' });
+      return res.status(404).send({ message: 'Pickup record not found' });
     }
-    res.status(200).send({ addr, de_addr, status });
+    res.status(200).send({ status, address, detailed_address });
   });
 });
 
 //구매 정보 업데이트
 app.put('/users/purchase/:id', (req, res) => {
   const { id } = req.params;
-  const { addr, de_addr, deli_status } = req.body;
-  const query = 'UPDATE users SET addr = ?, de_addr = ?, deli_status = ?';
-  connection.query(query, [addr, de_addr, deli_status], (err, results) => {
+  const { product, delivery_status, address, detailed_address } = req.body;
+  const query = 'UPDATE purchase SET product = ?, delivery_status = ?, address = ?, detailed_address = ? WHERE id = ?';
+  connection.query(query, [product, delivery_status, address, detailed_address, id], (err, results) => {
     if (err) {
       return res.status(500).send(err);
     }
     if (results.affectedRows === 0) {
-      return res.status(404).send({ message: 'User not found' });
+      return res.status(404).send({ message: 'Purchase record not found' });
     }
-    res.status(200).send({ addr, de_addr, deli_status });
+    res.status(200).send({ product, delivery_status, address, detailed_address });
   });
 });
 
@@ -139,18 +139,18 @@ app.put('/users/purchase/:id', (req, res) => {
 app.put('/users/product/:id', (req, res) => {
   const { id } = req.params;
   const { product, price, product_status } = req.body;
-  const query = 'UPDATE users SET product = ?, price = ?, product_status = ?';
-  connection.query(query, [product, price, product_status], (err, results) => {
+  const query = 'UPDATE product SET product = ?, price = ?, product_status = ? WHERE id = ?';
+  connection.query(query, [product, price, product_status, id], (err, results) => {
     if (err) {
       return res.status(500).send(err);
     }
     if (results.affectedRows === 0) {
-      return res.status(404).send({ message: 'User not found' });
+      return res.status(404).send({ message: 'Product not found' });
     }
     res.status(200).send({ product, price, product_status });
   });
 });
-  
+
 
 // 서버 시작
 app.listen(port, () => {
