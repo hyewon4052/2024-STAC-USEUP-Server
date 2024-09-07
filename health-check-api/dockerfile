@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3000
 
 # 서버 실행 명령어
-CMD ["node", "index.js"]
+CMD ["node", "app.js"]

@@ -9,7 +9,7 @@ services:
       MYSQL_USER: root               # MySQL 사용자 이름
       MYSQL_PASSWORD: password       # MySQL 사용자 비밀번호
     ports:
-      - "3306:3306"    # 로컬과 컨테이너의 포트 연결
+      - "3307:3306"    # 로컬과 컨테이너의 포트 연결
     volumes:
       - db-data:/var/lib/mysql       # 데이터 유지
     networks:
@@ -17,7 +17,7 @@ services:
 
   backend:
     build:
-      context: ./server        # Dockerfile 위치
+      context: ./health-check-api       # Dockerfile 위치
     container_name: express_app
     environment:
       DB_HOST: db             # MySQL 서비스명과 연결
