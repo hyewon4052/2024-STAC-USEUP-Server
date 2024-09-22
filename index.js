@@ -13,14 +13,6 @@ app.get('/', (req, res) => {
   res.send('Root');
 });
 
-app.get('/users', (req, res) => {
-  connection.query('SELECT * from Users', (error, rows) => {
-    if (error) throw error;
-    console.log('User info is: ', rows);
-    res.send(rows);
-  });
-});
-
 // Read
 // 고객 정보 조회
 app.get('/users/customer/:id', (req, res) => {
