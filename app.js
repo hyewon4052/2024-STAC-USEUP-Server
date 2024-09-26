@@ -6,7 +6,7 @@ const sequelize = require("./config/sequelize");
 const cookieParser = require('cookie-parser'); 
 
 const app = express();
-app.set('port', process.env.PORT || 5000);
+app.set('port', process.env.PORT || 3000);
 
 sequelize.sync({ force: false })
   .then(() => {
@@ -37,10 +37,12 @@ app.use(session({
 }));
 
 // 라우터 설정
-const { CollectRouter, CollectApplyingRouter, CollectSuccessRouter } = require('./routes');
+const { CollectRouter, CollectApplyingRouter, CollectSuccessRouter, askRouter } = require('./routes');
 app.use('/collect', CollectRouter);
 app.use('/collectapplying', CollectApplyingRouter);
 app.use('/collectsuccess', CollectSuccessRouter);
+app.use('/ask', askRouter);
+
 
 // 기본 라우터 설정
 app.get('/', (req, res) => {
